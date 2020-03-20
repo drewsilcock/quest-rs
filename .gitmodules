@@ -1,0 +1,3 @@
+[submodule "QuEST"]
+	path = QuEST
+	url = git@github.com:QuEST-kit/QuEST.git

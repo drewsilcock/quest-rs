@@ -1,8 +1,15 @@
 [package]
-authors = ["Nick Fitzgerald <fitzgen@gmail.com>"]
+authors = ["Drew Silcock <drew@drewsilcock.co.uk>"]
 build = "build.rs"
-name = "bindgen-tutorial-bzip2-sys"
+name = "QuEST-rs"
 version = "0.1.0"
+edition = "2018"
 
 [build-dependencies]
-bindgen = "*"
+bindgen = "0.53.2"
+cmake = "0.1.42"
+
+[dependencies]
+
+[lib]
+doctest = false

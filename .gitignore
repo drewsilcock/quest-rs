@@ -1,2 +1,14 @@
+.vscode
+.idea
+*~
+.*~
+*.swp
+.*.swp
+*.swo
+.*.swo
+
+.DS_Store
+
+build
 target
 Cargo.lock

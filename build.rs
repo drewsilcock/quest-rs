@@ -1,13 +1,16 @@
-extern crate bindgen;
+use bindgen;
+use cmake;
 
 use std::env;
 use std::path::PathBuf;
 
 fn main() {
-    println!("cargo:rustc-link-lib=bz2");
+    let dst = cmake::Config::new("QuEST").no_build_target(true).build();
+    println!("cargo:rustc-link-search=native={}/build/QuEST", dst.display());
+    println!("cargo:rustc-link-lib=dylib=QuEST");
 
     let bindings = bindgen::Builder::default()
-        .header("wrapper.h")
+        .header("QuEST/QuEST/include/QuEST.h")
         .generate()
         .expect("Unable to generate bindings");
 

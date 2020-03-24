@@ -1,13 +1,15 @@
 [package]
 authors = ["Drew Silcock <drew@drewsilcock.co.uk>"]
 build = "build.rs"
-name = "QuEST-rs"
+name = "quest-rs"
 version = "0.1.0"
 edition = "2018"
 
 [build-dependencies]
 bindgen = "0.53.2"
 cmake = "0.1.42"
+
+[dev-dependencies]
 
 [dependencies]
 

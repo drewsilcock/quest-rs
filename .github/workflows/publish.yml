@@ -8,7 +8,7 @@ on:
       - "**"
 
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -18,10 +18,9 @@ jobs:
       - name: Run tests
         run: cargo test
 
-      - name: Login to crates.io
-        run: cargo login ${CRATES_IO_API_KEY}
+      - name: Publish on crates.io
+        run: |
+          cargo login ${CRATES_IO_API_KEY} 
+          cargo publish
         env:
           CRATES_IO_TOKEN: ${{ secrets.CRATES_IO_TOKEN }}
-
-      - name: Publish on crates.io
-        run: cargo publish

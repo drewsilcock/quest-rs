@@ -2,8 +2,11 @@
 authors = ["Drew Silcock <drew@drewsilcock.co.uk>"]
 build = "build.rs"
 name = "quest-rs"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2018"
+
+[package.metadata.docs.rs]
+rustdoc-args = [ "--html-in-header", "docs/header.html" ]
 
 [build-dependencies]
 bindgen = "0.53.2"

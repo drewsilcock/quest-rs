@@ -1,5 +1,11 @@
-# Tutorial: Generating `bzip2` bindings with `bindgen` at `cargo build` time in `build.rs`
+# QuEST Rust Wrapper
 
-[Read the full tutorial here.](http://fitzgeraldnick.com/2016/12/14/using-libbindgen-in-build-rs.html)
+This library provides a safe Rust wrapper around the [QuEST](https://github.com/QuEST-Kit/QuEST) library for exact quantum computing.
 
-This code is released under the [Unlicense](./LICENSE).
+## Generating Docs
+
+To generate the docs, run:
+
+```sh
+RUSTDOCFLAGS="--html-in-header docs/header.html" cargo doc
+```

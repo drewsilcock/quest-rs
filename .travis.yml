@@ -17,10 +17,6 @@ before_install:
     - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
     - git submodule update --init --recursive
 
-install:
-  - sudo apt-get update
-  - sudo apt-get install llvm-dev libclang-dev clang
-
 script:
   - cargo build --verbose
   - cargo test --verbose

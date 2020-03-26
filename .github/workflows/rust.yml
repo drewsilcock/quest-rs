@@ -16,13 +16,6 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -f
-          sudo apt-get install llvm-dev libclang-dev clang
-          sudo apt-get install -f
-
       - name: Build
         run: cargo build --verbose
 

@@ -3,6 +3,10 @@
 pub mod environment;
 pub mod qubits;
 
+// There's currently an issue with the 128-bit integer FFI due to upstream bugs in LLVM.
+// Follow these threads for more info:
+// - https://github.com/rust-lang/rust/issues/54341
+// - https://github.com/rust-lang/unsafe-code-guidelines/issues/119
 #[allow(non_upper_case_globals)]
 #[allow(non_camel_case_types)]
 #[allow(non_snake_case)]
@@ -28,15 +32,17 @@ pub type QReal = f64; // QuEST also supports f32 and f128.
 ///
 /// ## Examples
 /// ```
+/// use quest_rs::Complex;
+/// 
 /// let alpha = Complex::new(0.4, 0.6);
 /// assert_eq!(alpha.real, 0.4);
 /// assert_eq!(alpha.imag, 0.6);
 ///
-/// let beta = Complex::new_real(1.2);
+/// let beta = Complex::real(1.2);
 /// assert_eq!(beta.real, 1.2);
 /// assert_eq!(beta.imag, 0.0);
 ///
-/// let gamma = Complex::new_imag(23.9);
+/// let gamma = Complex::imag(23.9);
 /// assert_eq!(gamma.real, 0.0);
 /// assert_eq!(gamma.imag, 23.9);
 ///
@@ -56,11 +62,11 @@ impl Complex {
         Complex { real, imag }
     }
 
-    pub fn new_real(real: QReal) -> Self {
+    pub fn real(real: QReal) -> Self {
         Complex { real, imag: 0.0 }
     }
 
-    pub fn new_imag(imag: QReal) -> Self {
+    pub fn imag(imag: QReal) -> Self {
         Complex { real: 0.0, imag }
     }
 
@@ -94,6 +100,8 @@ impl From<ffi::Complex> for Complex {
 ///
 /// ## Examples
 /// ```
+/// use quest_rs::{Complex, ComplexMatrix2};
+/// 
 /// let pauli_x = ComplexMatrix2::new([
 ///     [0.0, 1.0],
 ///     [1.0, 0.0],
@@ -110,9 +118,9 @@ impl From<ffi::Complex> for Complex {
 ///     [0.0, 0.0],
 /// ]);
 ///
-/// let phase = ComplexMatrix2::new_compact([
-///     [Complex::real(1.0), Compelx::zero()],
-///     [Complex::zero(), Complex::imag(1)],
+/// let phase = ComplexMatrix2::compact([
+///     [Complex::real(1.0), Complex::zero()],
+///     [Complex::zero(), Complex::imag(1.0)],
 /// ]);
 /// assert_eq!(phase.real, [
 ///     [1.0, 0.0],
@@ -123,31 +131,31 @@ impl From<ffi::Complex> for Complex {
 ///     [0.0, 1.0],
 /// ]);
 /// 
-/// let pauli_z = ComplexMatrix2::new_real([
+/// let pauli_z = ComplexMatrix2::real([
 ///     [1.0, 0.0],
 ///     [0.0, -1.0],
 /// ]);
 /// assert_eq!(pauli_z.real, [
 ///     [1.0, 0.0],
 ///     [0.0, -1.0],
-/// ])
+/// ]);
 /// assert_eq!(pauli_z.imag, [
 ///     [0.0, 0.0],
 ///     [0.0, 0.0],
-/// ])
+/// ]);
 /// 
-/// let pauli_y = ComplexMatrix2::new_imag([
+/// let pauli_y = ComplexMatrix2::imag([
 ///     [0.0, -1.0],
 ///     [1.0, 0.0],
 /// ]);
 /// assert_eq!(pauli_y.real, [
 ///     [0.0, 0.0],
 ///     [0.0, 0.0],
-/// ])
+/// ]);
 /// assert_eq!(pauli_y.imag, [
 ///     [0.0, -1.0],
 ///     [1.0, 0.0],
-/// ])
+/// ]);
 /// ```
 #[derive(Debug, Copy, Clone)]
 pub struct ComplexMatrix2 {
@@ -160,7 +168,7 @@ impl ComplexMatrix2 {
         ComplexMatrix2 { real, imag }
     }
 
-    pub fn new_compact(values: [[Complex; 2]; 2]) -> Self {
+    pub fn compact(values: [[Complex; 2]; 2]) -> Self {
         let mut real = [[0.0; 2]; 2];
         let mut imag = [[0.0; 2]; 2];
 
@@ -174,14 +182,14 @@ impl ComplexMatrix2 {
         ComplexMatrix2 { real, imag }
     }
 
-    pub fn new_real(real: [[QReal; 2]; 2]) -> Self {
+    pub fn real(real: [[QReal; 2]; 2]) -> Self {
         ComplexMatrix2 {
             real,
             imag: [[0.0, 0.0], [0.0, 0.0]],
         }
     }
 
-    pub fn new_imag(imag: [[QReal; 2]; 2]) -> Self {
+    pub fn imag(imag: [[QReal; 2]; 2]) -> Self {
         ComplexMatrix2 {
             real: [[0.0, 0.0], [0.0, 0.0]],
             imag,
@@ -202,7 +210,78 @@ impl From<ComplexMatrix2> for ffi::ComplexMatrix2 {
 ///
 /// ## Examples
 /// ```
-/// let CNOT
+/// use quest_rs::{Complex, ComplexMatrix4};
+/// 
+/// let sqrt_swap = ComplexMatrix4::new([
+///     [1.0, 0.0, 0.0, 0.0],
+///     [0.0, 0.5, 0.5, 0.0],
+///     [0.0, 0.5, 0.5, 0.0],
+///     [0.0, 0.0, 0.0, 1.0],
+/// ], [
+///     [0.0, 0.0, 0.0, 0.0],
+///     [0.0, 0.5, -0.5, 0.0],
+///     [0.0, -0.5, 0.5, 0.0],
+///     [0.0, 0.0, 0.0, 0.0],
+/// ]);
+/// assert_eq!(sqrt_swap.real, [
+///     [1.0, 0.0, 0.0, 0.0],
+///     [0.0, 0.5, 0.5, 0.0],
+///     [0.0, 0.5, 0.5, 0.0],
+///     [0.0, 0.0, 0.0, 1.0],
+/// ]);
+/// assert_eq!(sqrt_swap.imag, [
+///     [0.0, 0.0, 0.0, 0.0],
+///     [0.0, 0.5, -0.5, 0.0],
+///     [0.0, -0.5, 0.5, 0.0],
+///     [0.0, 0.0, 0.0, 0.0],
+/// ]);
+/// 
+/// let sqrt_swap_compact = ComplexMatrix4::compact([
+///     [Complex::real(1.0), Complex::zero(), Complex::zero(), Complex::zero()],
+///     [Complex::zero(), Complex::new(0.5, 0.5), Complex::new(0.5, -0.5), Complex::zero()],
+///     [Complex::zero(), Complex::new(0.5, -0.5), Complex::new(0.5, 0.5), Complex::zero()],
+///     [Complex::zero(), Complex::zero(), Complex::zero(), Complex::real(1.0)],
+/// ]);
+/// assert_eq!(sqrt_swap.real, sqrt_swap_compact.real);
+/// assert_eq!(sqrt_swap.imag, sqrt_swap_compact.imag);
+/// 
+/// let controlled_z = ComplexMatrix4::real([
+///     [1.0, 0.0, 0.0, 0.0],
+///     [0.0, 1.0, 0.0, 0.0],
+///     [0.0, 0.0, 1.0, 0.0],
+///     [0.0, 0.0, 0.0, -1.0],
+/// ]);
+/// assert_eq!(controlled_z.real, [
+///     [1.0, 0.0, 0.0, 0.0],
+///     [0.0, 1.0, 0.0, 0.0],
+///     [0.0, 0.0, 1.0, 0.0],
+///     [0.0, 0.0, 0.0, -1.0],
+/// ]);
+/// assert_eq!(controlled_z.imag, [
+///     [0.0, 0.0, 0.0, 0.0],
+///     [0.0, 0.0, 0.0, 0.0],
+///     [0.0, 0.0, 0.0, 0.0],
+///     [0.0, 0.0, 0.0, 0.0],
+/// ]);
+/// 
+/// let imaginary_cnot = ComplexMatrix4::imag([
+///     [1.0, 0.0, 0.0, 0.0],
+///     [0.0, 1.0, 0.0, 0.0],
+///     [0.0, 0.0, 0.0, 1.0],
+///     [0.0, 0.0, 1.0, 0.0],
+/// ]);
+/// assert_eq!(imaginary_cnot.real, [
+///     [0.0, 0.0, 0.0, 0.0],
+///     [0.0, 0.0, 0.0, 0.0],
+///     [0.0, 0.0, 0.0, 0.0],
+///     [0.0, 0.0, 0.0, 0.0],
+/// ]);
+/// assert_eq!(imaginary_cnot.imag, [
+///     [1.0, 0.0, 0.0, 0.0],
+///     [0.0, 1.0, 0.0, 0.0],
+///     [0.0, 0.0, 0.0, 1.0],
+///     [0.0, 0.0, 1.0, 0.0],
+/// ]);
 /// ```
 #[derive(Debug, Copy, Clone)]
 pub struct ComplexMatrix4 {
@@ -215,7 +294,7 @@ impl ComplexMatrix4 {
         ComplexMatrix4 { real, imag }
     }
 
-    pub fn new_compact(values: [[Complex; 4]; 4]) -> Self {
+    pub fn compact(values: [[Complex; 4]; 4]) -> Self {
         let mut real = [[0.0; 4]; 4];
         let mut imag = [[0.0; 4]; 4];
 
@@ -229,14 +308,14 @@ impl ComplexMatrix4 {
         ComplexMatrix4 { real, imag }
     }
 
-    pub fn new_real(real: [[QReal; 4]; 4]) -> Self {
+    pub fn real(real: [[QReal; 4]; 4]) -> Self {
         ComplexMatrix4 {
             real,
             imag: [[0.0; 4]; 4],
         }
     }
 
-    pub fn new_imag(imag: [[QReal; 4]; 4]) -> Self {
+    pub fn imag(imag: [[QReal; 4]; 4]) -> Self {
         ComplexMatrix4 {
             real: [[0.0; 4]; 4],
             imag,

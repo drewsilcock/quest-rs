@@ -2,8 +2,10 @@ name: Publish
 
 on:
   push:
+    branches:
+      - "**"
     tags:
-      - "*"
+      - "**"
 
 jobs:
   build:

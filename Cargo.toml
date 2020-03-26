@@ -8,7 +8,7 @@ license = "MIT"
 description = "Safe Rust wrapper around the Quantum Exact Simulation Toolkit (QuEST)"
 homepage = "https://github.com/drewsilcock/quest-rs"
 repository = "https://github.com/drewsilcock/quest-rs"
-keywords = ["quantum", "simulation", "wrappers", "openmp", "hpc", "physics"]
+keywords = ["quantum", "simulation", "wrappers", "hpc", "physics"]
 categories = ["simulation", "api-bindings", "science"]
 readme = "README.md"
 

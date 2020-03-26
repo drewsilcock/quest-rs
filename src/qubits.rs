@@ -792,6 +792,7 @@ impl<'a> QuReg<'a> {
         target_qubit: i32,
         kraus_operators: Vec<ComplexMatrix2>,
     ) -> &mut Self {
+        let num_operators = kraus_operators.len();
         let ffi_kraus_operators: Vec<ffi::ComplexMatrix2> =
             kraus_operators.into_iter().map(Into::into).collect();
         unsafe {
@@ -799,7 +800,7 @@ impl<'a> QuReg<'a> {
                 self.reg,
                 target_qubit,
                 ffi_kraus_operators.as_ptr() as *mut ffi::ComplexMatrix2,
-                kraus_operators.len() as i32,
+                num_operators as i32,
             );
         }
         self
@@ -811,6 +812,7 @@ impl<'a> QuReg<'a> {
         target_qubit_two: i32,
         kraus_operators: Vec<ComplexMatrix4>,
     ) -> &mut Self {
+        let num_operators = kraus_operators.len();
         let ffi_kraus_operators: Vec<ffi::ComplexMatrix4> =
             kraus_operators.into_iter().map(Into::into).collect();
         unsafe {
@@ -819,7 +821,7 @@ impl<'a> QuReg<'a> {
                 target_qubit_one,
                 target_qubit_two,
                 ffi_kraus_operators.as_ptr() as *mut ffi::ComplexMatrix4,
-                kraus_operators.len() as i32,
+                num_operators as i32,
             );
         }
         self
@@ -830,6 +832,7 @@ impl<'a> QuReg<'a> {
         target_qubits: Vec<i32>,
         kraus_operators: Vec<ComplexMatrixN>,
     ) -> &mut Self {
+        let num_operators = kraus_operators.len();
         let kraus_ops_native = kraus_operators
             .iter()
             .map(|op| op.matrix)
@@ -840,7 +843,7 @@ impl<'a> QuReg<'a> {
                 target_qubits.as_ptr() as *mut i32,
                 target_qubits.len() as i32,
                 kraus_ops_native.as_ptr() as *mut ffi::ComplexMatrixN,
-                kraus_operators.len() as i32,
+                num_operators as i32,
             );
         }
         self

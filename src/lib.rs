@@ -6,6 +6,7 @@ pub mod qubits;
 #[allow(non_upper_case_globals)]
 #[allow(non_camel_case_types)]
 #[allow(non_snake_case)]
+#[allow(dead_code)]
 mod ffi {
     include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
 }
@@ -93,11 +94,60 @@ impl From<ffi::Complex> for Complex {
 ///
 /// ## Examples
 /// ```
-/// let pauli_x = ComplexMatrix2::new([[0.0, 1.0], [1.0, 0.0]], [[0.0, 0.0], [0.0, 0.0]]);
-/// assert_eq!(pauli_x.real, [[0.0, 1.0], [1.0, 0.0]]);
-/// assert_eq!(pauli_x.imag, [[0.0, 0.0], [0.0, 0.0]]);
+/// let pauli_x = ComplexMatrix2::new([
+///     [0.0, 1.0],
+///     [1.0, 0.0],
+/// ], [
+///     [0.0, 0.0],
+///     [0.0, 0.0],
+/// ]);
+/// assert_eq!(pauli_x.real, [
+///     [0.0, 1.0],
+///     [1.0, 0.0],
+/// ]);
+/// assert_eq!(pauli_x.imag, [
+///     [0.0, 0.0],
+///     [0.0, 0.0],
+/// ]);
 ///
-/// let phase = ComplexMatrix2::new_compact([[Complex::real(1.0), Compelx::zero()], [Complex::zero(), Complex::imag(1)]])
+/// let phase = ComplexMatrix2::new_compact([
+///     [Complex::real(1.0), Compelx::zero()],
+///     [Complex::zero(), Complex::imag(1)],
+/// ]);
+/// assert_eq!(phase.real, [
+///     [1.0, 0.0],
+///     [0.0, 0.0],
+/// ]);
+/// assert_eq!(phase.imag, [
+///     [0.0, 0.0],
+///     [0.0, 1.0],
+/// ]);
+/// 
+/// let pauli_z = ComplexMatrix2::new_real([
+///     [1.0, 0.0],
+///     [0.0, -1.0],
+/// ]);
+/// assert_eq!(pauli_z.real, [
+///     [1.0, 0.0],
+///     [0.0, -1.0],
+/// ])
+/// assert_eq!(pauli_z.imag, [
+///     [0.0, 0.0],
+///     [0.0, 0.0],
+/// ])
+/// 
+/// let pauli_y = ComplexMatrix2::new_imag([
+///     [0.0, -1.0],
+///     [1.0, 0.0],
+/// ]);
+/// assert_eq!(pauli_y.real, [
+///     [0.0, 0.0],
+///     [0.0, 0.0],
+/// ])
+/// assert_eq!(pauli_y.imag, [
+///     [0.0, -1.0],
+///     [1.0, 0.0],
+/// ])
 /// ```
 #[derive(Debug, Copy, Clone)]
 pub struct ComplexMatrix2 {
@@ -111,8 +161,8 @@ impl ComplexMatrix2 {
     }
 
     pub fn new_compact(values: [[Complex; 2]; 2]) -> Self {
-        let real = [[0.0; 2]; 2];
-        let imag = [[0.0; 2]; 2];
+        let mut real = [[0.0; 2]; 2];
+        let mut imag = [[0.0; 2]; 2];
 
         for (i, row) in values.iter().enumerate() {
             for (j, value) in row.iter().enumerate() {
@@ -166,10 +216,17 @@ impl ComplexMatrix4 {
     }
 
     pub fn new_compact(values: [[Complex; 4]; 4]) -> Self {
-        ComplexMatrix4 {
-            real: [[0.0; 4]; 4],
-            imag: [[0.0; 4]; 4],
+        let mut real = [[0.0; 4]; 4];
+        let mut imag = [[0.0; 4]; 4];
+
+        for (i, row) in values.iter().enumerate() {
+            for (j, value) in row.iter().enumerate() {
+                real[i][j] = value.real;
+                imag[i][j] = value.imag;
+            }
         }
+
+        ComplexMatrix4 { real, imag }
     }
 
     pub fn new_real(real: [[QReal; 4]; 4]) -> Self {

@@ -47,9 +47,9 @@ impl From<&QuestEnv> for ffi::QuESTEnv {
     }
 }
 
-pub fn seed_quest(seedValues: Vec<u64>) {
+pub fn seed_quest(seed_values: Vec<u64>) {
     unsafe {
-        ffi::seedQuEST(seedValues.as_ptr() as *mut u64, seedValues.len() as i32);
+        ffi::seedQuEST(seed_values.as_ptr() as *mut u64, seed_values.len() as i32);
     }
 }
 

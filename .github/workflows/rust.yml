@@ -17,13 +17,13 @@ jobs:
           submodules: recursive
 
       - name: Build
-        run: cargo build --verbose
+        run: cargo build
 
       - name: Run tests
-        run: cargo test --verbose
+        run: cargo test
 
       - name: Docs
-        run: cargo doc --verbose
+        run: cargo doc
 
       - uses: actions/upload-artifact@v1
         with:

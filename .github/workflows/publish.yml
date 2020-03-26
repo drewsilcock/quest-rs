@@ -20,7 +20,7 @@ jobs:
 
       - name: Publish on crates.io
         run: |
-          cargo login ${CRATES_IO_API_KEY} 
+          cargo login ${CRATES_IO_API_KEY}
           cargo publish
         env:
-          CRATES_IO_TOKEN: ${{ secrets.CRATES_IO_TOKEN }}
+          CRATES_IO_API_KEY: ${{ secrets.CRATES_IO_API_KEY }}

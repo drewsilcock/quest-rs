@@ -4,6 +4,17 @@ build = "build.rs"
 name = "quest-rs"
 version = "0.2.0"
 edition = "2018"
+license = "MIT"
+description = "Safe Rust wrapper around the Quantum Exact Simulation Toolkit (QuEST)"
+homepage = "https://github.com/drewsilcock/quest-rs"
+repository = "https://github.com/drewsilcock/quest-rs"
+keywords = ["quantum", "simulation", "wrappers", "openmp", "hpc", "physics"]
+categories = ["simulation", "api-bindings", "science"]
+readme = "README.md"
+
+[badges]
+# Once https://github.com/rust-lang/crates.io/pull/1838 is merged, we can add
+# the GitHub actions badge in here.
 
 [package.metadata.docs.rs]
 rustdoc-args = [ "--html-in-header", "docs/header.html" ]

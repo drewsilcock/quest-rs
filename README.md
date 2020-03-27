@@ -2,7 +2,7 @@
 
 [![Build](https://github.com/drewsilcock/quest-rs/workflows/Build/badge.svg)](https://github.com/drewsilcock/quest-rs/actions?query=workflow%3ABuild)
 [![Docs](https://docs.rs/quest-rs/badge.svg)](https://docs.rs/quest-rs)
-[![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Introduction
 

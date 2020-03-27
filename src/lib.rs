@@ -40,33 +40,33 @@
 //! The fluent API makes more complicated circuits easy to create:
 //! ```
 //! use quest_rs::{Complex, ComplexMatrix2, ComplexMatrixN, QReal, QuReg, QuestEnv, Vector};
-//! 
+//!
 //! let env = QuestEnv::new();
-//! 
+//!
 //! let mut qubits = QuReg::new(3, &env);
 //! qubits.init_zero_state();
-//! 
+//!
 //! println!("Out environment is:");
 //! qubits.report_params();
 //! env.report();
-//! 
+//!
 //! // Set up the circuitry
-//! 
+//!
 //! let unitary_alpha = Complex::new(0.5, 0.5);
 //! let unitary_beta = Complex::new(0.5, -0.5);
-//! 
+//!
 //! let unitary_matrix = ComplexMatrix2 {
 //!     real: [[0.5, 0.5], [0.5, 0.5]],
 //!     imag: [[0.5, -0.5], [-0.5, 0.5]],
 //! };
-//! 
+//!
 //! let mut toffoli_gate = ComplexMatrixN::new(3);
 //! for i in 0..6 {
 //!     toffoli_gate.set_real(i, i, 1.0);
 //! }
 //! toffoli_gate.set_real(6, 7, 1.0);
 //! toffoli_gate.set_real(7, 6, 1.0);
-//! 
+//!
 //! qubits
 //!     .hadamard(0)
 //!     .controlled_not(0, 1)
@@ -78,9 +78,9 @@
 //!     .controlled_compact_unitary(0, 1, unitary_alpha, unitary_beta)
 //!     .multi_controlled_unitary(vec![0, 1], 2, unitary_matrix)
 //!     .multi_qubit_unitary(vec![0, 1, 2], toffoli_gate);
-//! 
+//!
 //! // Study the output
-//! 
+//!
 //! println!("Circuit output:");
 //! println!("---------------");
 //! println!("Probability amplitude of |111> is: {}", qubits.probability_amplitude(0b111));
@@ -113,13 +113,18 @@ pub use environment::{seed_quest, seed_quest_default, QuestEnv};
 pub use qubits::QuReg;
 
 // There's currently an issue with the 128-bit integer FFI due to upstream bugs in LLVM.
-// Follow these threads for more info:
+// This isn't a problem when we're in single or double precision but there are hundreds
+// of warnings generated because of math.h includes. This *is* a problem for quad
+// precision, though. Follow these threads for more info:
 // - https://github.com/rust-lang/rust/issues/54341
 // - https://github.com/rust-lang/unsafe-code-guidelines/issues/119
+#[allow(improper_ctypes)]
+
 #[allow(non_upper_case_globals)]
 #[allow(non_camel_case_types)]
 #[allow(non_snake_case)]
 #[allow(dead_code)]
+#[allow(clippy::all)]
 mod ffi {
     include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
 }

@@ -100,6 +100,11 @@ println!(
 );
 ```
 
+## Template
+
+For a starter template to get going with an executable project that uses this
+wrapper, see: https://github.com/drewsilcock/quest-rs-template.
+
 ## Todo
 
 The C QuEST library has several compile-option flags which should be

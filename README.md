@@ -103,7 +103,9 @@ println!(
 ## Template
 
 For a starter template to get going with an executable project that uses this
-wrapper, see: https://github.com/drewsilcock/quest-rs-template.
+wrapper, see: https://github.com/drewsilcock/quest-rs-template or press this button:
+
+[![Use Template](https://img.shields.io/badge/Starter%20Template-Use-orange.svg)](https://github.com/drewsilcock/quest-rs-template/generate)
 
 ## Todo
 

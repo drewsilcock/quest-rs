@@ -305,11 +305,14 @@ impl<'a> QuReg<'a> {
             panic!("Number of target qubits must be the same as number of target Pauli operation types");
         }
 
+        let ffi_target_paulis: Vec<ffi::pauliOpType> =
+            target_paulis.into_iter().map(Into::into).collect();
+
         unsafe {
             ffi::calcExpecPauliProd(
                 self.reg,
                 target_qubits.as_ptr() as *mut i32,
-                target_paulis.as_ptr() as *mut u32,
+                ffi_target_paulis.as_ptr() as *mut u32,
                 target_qubits.len() as i32,
                 workspace.reg,
             )
@@ -325,10 +328,14 @@ impl<'a> QuReg<'a> {
         // There's an additional constraint that `pauli_operation_types.len() ==
         // term_coefficients.len() * qureg.num_bits_represented`, but the QuEST
         // library can handle this validation.
+
+        let ffi_pauli_operation_types: Vec<ffi::pauliOpType> =
+            pauli_operation_types.into_iter().map(Into::into).collect();
+
         unsafe {
             ffi::calcExpecPauliSum(
                 self.reg,
-                pauli_operation_types.as_ptr() as *mut u32,
+                ffi_pauli_operation_types.as_ptr() as *mut u32,
                 term_coefficients.as_ptr() as *mut QReal,
                 term_coefficients.len() as i32,
                 workspace.reg,
@@ -910,11 +917,15 @@ impl<'a> QuReg<'a> {
         if target_qubits.len() != target_paulis.len() {
             panic!("Number of target qubits must be the same as number of target Pauli operation types");
         }
+
+        let ffi_target_paulis: Vec<ffi::pauliOpType> =
+            target_paulis.into_iter().map(Into::into).collect();
+
         unsafe {
             ffi::multiRotatePauli(
                 self.reg,
                 target_qubits.as_ptr() as *mut i32,
-                target_paulis.as_ptr() as *mut u32,
+                ffi_target_paulis.as_ptr() as *mut u32,
                 target_qubits.len() as i32,
                 angle,
             );
@@ -937,10 +948,14 @@ impl<'a> QuReg<'a> {
         // this library, we do some fiddling around to make sure that this
         // method updates the current instance.
         let this_qureg_clone = self.clone();
+
+        let ffi_pauli_operation_types: Vec<ffi::pauliOpType> =
+            pauli_operation_types.into_iter().map(Into::into).collect();
+
         unsafe {
             ffi::applyPauliSum(
                 this_qureg_clone.reg,
-                pauli_operation_types.as_ptr() as *mut u32,
+                ffi_pauli_operation_types.as_ptr() as *mut u32,
                 term_coefficients.as_ptr() as *mut QReal,
                 term_coefficients.len() as i32,
                 self.reg,

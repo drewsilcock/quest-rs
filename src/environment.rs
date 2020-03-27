@@ -27,6 +27,12 @@ impl QuestEnv {
     }
 }
 
+impl Default for QuestEnv {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Drop for QuestEnv {
     fn drop(&mut self) {
         unsafe {

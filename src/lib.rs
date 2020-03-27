@@ -119,7 +119,6 @@ pub use qubits::QuReg;
 // - https://github.com/rust-lang/rust/issues/54341
 // - https://github.com/rust-lang/unsafe-code-guidelines/issues/119
 #[allow(improper_ctypes)]
-
 #[allow(non_upper_case_globals)]
 #[allow(non_camel_case_types)]
 #[allow(non_snake_case)]
@@ -564,9 +563,8 @@ impl ComplexMatrixN {
 
     fn get_data_ptr(&self, raw_matrix: *mut *mut QReal, i: usize, j: usize) -> *mut QReal {
         unsafe {
-            let row = *raw_matrix.offset(i as isize);
-            let value_ptr = row.offset(j as isize);
-            value_ptr
+            let row = *raw_matrix.add(i);
+            row.add(j)
         }
     }
 }
@@ -587,10 +585,21 @@ impl From<ComplexMatrixN> for ffi::ComplexMatrixN {
 
 #[derive(Debug, Copy, Clone)]
 pub enum PauliOpType {
-    PauliI = 0,
-    PauliX = 1,
-    PauliY = 2,
-    PauliZ = 3,
+    PauliI,
+    PauliX,
+    PauliY,
+    PauliZ,
+}
+
+impl From<PauliOpType> for ffi::pauliOpType {
+    fn from(item: PauliOpType) -> Self {
+        match item {
+            PauliOpType::PauliI => ffi::pauliOpType_PAULI_I,
+            PauliOpType::PauliX => ffi::pauliOpType_PAULI_X,
+            PauliOpType::PauliY => ffi::pauliOpType_PAULI_Y,
+            PauliOpType::PauliZ => ffi::pauliOpType_PAULI_Z,
+        }
+    }
 }
 
 #[cfg(test)]

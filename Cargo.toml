@@ -2,7 +2,7 @@
 authors = ["Drew Silcock <drew@drewsilcock.co.uk>"]
 build = "build.rs"
 name = "quest-rs"
-version = "0.2.7"
+version = "0.2.8"
 edition = "2018"
 license = "MIT"
 description = "Safe Rust wrapper around the Quantum Exact Simulation Toolkit (QuEST)"
